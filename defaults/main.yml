@@ -1,0 +1,28 @@
+---
+postgresql_apt_gpg_key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+postgresql_apt_repository: "deb [signed-by={{ _postgresql_keyring_path }}] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+postgresql_apt_depend_packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - apt-transport-https
+  - acl
+postgresql_version: "14"
+postgresql_packages:
+  - postgresql-{{ postgresql_version }}
+  - python3-psycopg2
+postgresql_data_directory: "/var/lib/postgresql/{{ postgresql_version }}"
+postgresql_users: []
+postgresql_databases: []
+postgresql_hba_extra_entries: []
+postgresql_config:
+  listen_addresses: localhost
+  max_connections: 100
+  shared_buffers: 128MB
+
+postgresql_cluster: false
+postgresql_cluster_master_group: "pg_master"
+postgresql_cluster_replica_group: "pg_replica"
+postgresql_replication_user_name: replica
+postgresql_replication_user_password: replica_password
+postgresql_master_host: "{{ hostvars[groups[postgresql_cluster_master_group][0]].ansible_host }}"

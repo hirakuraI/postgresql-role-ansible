@@ -1,0 +1,37 @@
+---
+- name: Stop postgresql
+  ansible.builtin.systemd:
+    name: postgresql
+    state: stopped
+
+- name: Erase data dir
+  ansible.builtin.file:
+    path: "{{ postgresql_data_directory }}"
+    state: absent
+    mode: "0700"
+    owner: postgres
+    group: postgres
+  no_log: true
+
+- name: Create data dir
+  ansible.builtin.file:
+    path: "{{ postgresql_data_directory }}"
+    state: directory
+    mode: "0700"
+    owner: postgres
+    group: postgres
+
+- name: Set permissions to the data dir
+  ansible.builtin.file:
+    path: "{{ postgresql_data_directory }}"
+    state: directory
+    mode: "0750"
+    owner: postgres
+    group: postgres
+    recurse: true
+
+- name: Start PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    state: started
+    enabled: true
